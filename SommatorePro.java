@@ -5,34 +5,63 @@ import javax.swing.*;
 public class SommatorePro {
 
     public static void main(String[] args) {
+        final MyFrame frame = new MyFrame("Sommatore Pro", new BorderLayout(10, 10));
 
-        final JFrame frame = new MyFrame("SommatorePro", new BorderLayout());
+        // --- ZONA NORTH: INPUT ---
+        final JPanel north = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
+        final JTextField one = new JTextField(8);
+        final JTextField two = new JTextField(8);
 
-        final JPanel north = new JPanel(new FlowLayout());
-
-        final JLabel numOne = new JLabel("Num 1:");
-        final JLabel numTwo = new JLabel("Num 2:");
-        final JTextField one = new JTextField();
-        final JTextField two = new JTextField();
-
-        north.add(numOne);
+        north.add(new JLabel("Num 1:"));
         north.add(one);
-        north.add(numTwo);
+        // Uno spazio vuoto per distanziare i campi
+        north.add(Box.createHorizontalStrut(10));
+        north.add(new JLabel("Num 2:"));
         north.add(two);
 
-        final JPanel center = new JPanel(new FlowLayout());
-        final JLabel mess = new JLabel("Inserisci i numeri e premi calcola");
-        center.add(mess, FlowLayout.CENTER);
+        // --- ZONA CENTER: RISULTATO ---
+        // TRUCCO: Aggiungiamo la label DIRETTAMENTE al BorderLayout.CENTER
+        // senza metterla dentro un altro JPanel, così si centra perfettamente.
+        final JLabel mess = new JLabel("Inserisci i numeri e premi calcola", SwingConstants.CENTER);
+        mess.setFont(new Font("Arial", Font.BOLD, 18));
+        mess.setForeground(Color.DARK_GRAY);
 
-        final JPanel south = new JPanel(new FlowLayout());
+        // --- ZONA SOUTH: AZIONE ---
         final JButton calc = new JButton("Calcola Somma");
-        south.add(calc, FlowLayout.CENTER);
+        calc.setPreferredSize(new Dimension(200, 40));
+        final JPanel south = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        south.add(calc);
 
-        frame.getContentPane().add(north, BorderLayout.NORTH);
-        frame.getContentPane().add(center, BorderLayout.CENTER);
-        frame.getContentPane().add(south, BorderLayout.SOUTH);
+        // Montaggio finale sul pannello principale
+        frame.getMainPanel().add(north, BorderLayout.NORTH);
+        frame.getMainPanel().add(mess, BorderLayout.CENTER); // Direttamente qui!
+        frame.getMainPanel().add(south, BorderLayout.SOUTH);
+
+        // --- LOGICA (L'Action Listener rimane nel Controller) ---
+        calc.addActionListener(e -> {
+            try {
+                String s1 = one.getText();
+                String s2 = two.getText();
+
+                int num1 = Integer.parseInt(s1);
+                int num2 = Integer.parseInt(s2);
+
+                int somma = num1 + num2;
+
+                mess.setText("Risultato: " + somma);
+                mess.setForeground(new Color(0, 150, 0)); // Verde "successo"
+
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(frame,
+                        "Devi inserire solo numeri interi, non lettere!",
+                        "Errore di Input",
+                        JOptionPane.ERROR_MESSAGE);
+
+                mess.setText("Input non valido!");
+                mess.setForeground(Color.RED);
+            }
+        });
 
         frame.setVisible(true);
-
     }
 }
