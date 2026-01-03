@@ -1,3 +1,6 @@
+package it.unibo.prime.model;
+
+import it.unibo.prime.controller.PrimeController;
 
 public class PrimeModel {
 
